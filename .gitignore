@@ -1,1 +1,3 @@
 *.pyc
+*/settings.py
+firstsite/settings.py
