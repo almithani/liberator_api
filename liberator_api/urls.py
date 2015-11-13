@@ -15,14 +15,17 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib.auth.models import User, Group
+
 from rest_framework import routers, serializers, viewsets
-from liberator_api.serializers import UserSerializer
+
+from liberator_api.models import ShelfCache
 from liberator_api import views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
+router.register(r'boards', views.BoardViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

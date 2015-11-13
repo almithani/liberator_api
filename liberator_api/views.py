@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
+
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
-from liberator_api.serializers import UserSerializer, GroupSerializer
+
+from liberator_api.models import ShelfCache
+from liberator_api.serializers import UserSerializer, GroupSerializer, ShelfCacheSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,3 +26,11 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+
+class BoardViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows boards to be viewed or edited.
+    """
+    queryset = ShelfCache.objects.all()
+    serializer_class = ShelfCacheSerializer  
