@@ -8,14 +8,14 @@ from liberator_api.models import ShelfCache
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = ('id', 'url', 'username', 'email', 'is_staff')
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
 
-class ShelfCacheSerializer(serializers.HyperlinkedModelSerializer):
+class ShelfCacheSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ShelfCache
-		fields = ('url', 'user', 'jsonCache')
+		fields = ('id', 'url', 'user', 'jsonCache')

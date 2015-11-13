@@ -26,6 +26,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'boards', views.BoardViewSet)
+router.register(r'currentUser', views.CurrentUserViewSet, base_name='currentUser')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
