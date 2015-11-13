@@ -5,6 +5,8 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 
+from pprint import pprint
+
 from liberator_api.models import ShelfCache
 from liberator_api.serializers import UserSerializer, GroupSerializer, ShelfCacheSerializer
 
@@ -27,7 +29,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
     """ 
 
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
 
     def list(self, request):
         serializer = self.serializer_class(request.user, context={'request': request})

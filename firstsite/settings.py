@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'liberator_api',
 )
@@ -109,7 +110,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
         'app.recoroll.com',
         'stageapp.recoroll.com'
 )
+
+SESSION_COOKIE_DOMAIN="recoroll.com"
+SESSION_COOKIE_HTTPONLY=False
