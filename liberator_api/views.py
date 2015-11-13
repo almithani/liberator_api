@@ -32,5 +32,17 @@ class BoardViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows boards to be viewed or edited.
     """
+    permission_classes = (AllowAny,)
     queryset = ShelfCache.objects.all()
     serializer_class = ShelfCacheSerializer  
+
+    def retreve(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        from rest_framework.renderers import JSONRenderer
+        from django.http import HttpResponse
+        
+        json = JSONRenderer().render(serializer.data)
+        return HttpResponse(json, content_type="application/json")
+
