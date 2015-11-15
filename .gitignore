@@ -1,3 +1,4 @@
 *.pyc
 firstsite/db_settings.py
 static/
+media/

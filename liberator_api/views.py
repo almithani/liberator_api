@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from pprint import pprint
 
-from liberator_api.models import ShelfCache
-from liberator_api.serializers import UserSerializer, GroupSerializer, ShelfCacheSerializer
+from liberator_api.models import UserMeta, ShelfCache
+from liberator_api.serializers import UserSerializer, UserMetaSerializer, GroupSerializer, ShelfCacheSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,16 +23,27 @@ class UserViewSet(viewsets.ModelViewSet):
         return super(UserViewSet, self).create(request)
 
 
+class UserMetaViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    permission_classes = (permissions.AllowAny,)
+    queryset = UserMeta.objects.all()
+    serializer_class = UserMetaSerializer
+
+
+
 class CurrentUserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows actions on currently logged in user
     """ 
 
-    serializer_class = UserSerializer
+    serializer_class = UserMetaSerializer
     permission_classes = (permissions.AllowAny,)
 
     def list(self, request):
-        serializer = self.serializer_class(request.user, context={'request': request})
+        usermeta = UserMeta.objects.get(user=request.user)
+        serializer = self.serializer_class(usermeta, context={'request': request})
         return Response(serializer.data)   
 
 
