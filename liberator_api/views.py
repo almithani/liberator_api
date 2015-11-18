@@ -31,6 +31,11 @@ class UserMetaViewSet(viewsets.ModelViewSet):
     queryset = UserMeta.objects.all()
     serializer_class = UserMetaSerializer
 
+    def retrieve(self, request, pk=None):
+        usermeta = UserMeta.objects.get(user__id=pk)
+        serializer = self.serializer_class(usermeta)
+        return Response(serializer.data)  
+
 
 
 class CurrentUserViewSet(viewsets.ModelViewSet):

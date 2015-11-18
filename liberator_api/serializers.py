@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserMetaSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
+	avatar = serializers.ImageField()
 
 	class Meta:
 		model = UserMeta
