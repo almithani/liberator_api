@@ -1,11 +1,16 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 
 from pprint import pprint
+
+import json
+from json import JSONEncoder
 
 from liberator_api.models import UserMeta, ShelfCache
 from liberator_api.serializers import UserSerializer, UserMetaSerializer, GroupSerializer, ShelfCacheSerializer
@@ -31,10 +36,10 @@ class UserMetaViewSet(viewsets.ModelViewSet):
     queryset = UserMeta.objects.all()
     serializer_class = UserMetaSerializer
 
-    def retrieve(self, request, pk=None):
-        usermeta = UserMeta.objects.get(user__id=pk)
-        serializer = self.serializer_class(usermeta)
-        return Response(serializer.data)  
+    #def retrieve(self, request, pk=None):
+    #    usermeta = UserMeta.objects.get(user__id=pk)
+    #    serializer = self.serializer_class(usermeta)
+    #    return Response(serializer.data)  
 
 
 
@@ -47,9 +52,12 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
     def list(self, request):
-        usermeta = UserMeta.objects.get(user=request.user)
-        serializer = self.serializer_class(usermeta, context={'request': request})
-        return Response(serializer.data)   
+        if request.user.is_authenticated():
+            usermeta = UserMeta.objects.get(user=request.user)
+            serializer = self.serializer_class(usermeta, context={'request': request})
+            return Response(serializer.data) 
+        else:
+            return HttpResponse(json.dumps({}), content_type="application/json")
 
 
 class GroupViewSet(viewsets.ModelViewSet):
