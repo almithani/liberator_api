@@ -12,8 +12,8 @@ from pprint import pprint
 import json
 from json import JSONEncoder
 
-from liberator_api.models import UserMeta, ShelfCache
-from liberator_api.serializers import UserSerializer, UserMetaSerializer, GroupSerializer, ShelfCacheSerializer
+from liberator_api.models import UserMeta, Book, ShelfCache
+from liberator_api.serializers import UserSerializer, UserMetaSerializer, GroupSerializer, BookSerializer, ShelfCacheSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -66,6 +66,14 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 
 class BoardViewSet(viewsets.ModelViewSet):

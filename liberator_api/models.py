@@ -12,6 +12,16 @@ class UserMeta(models.Model):
 	def __unicode__(self):
 		return self.displayName
 
+class Book(models.Model):
+	title = models.CharField(max_length=600)
+	author = models.CharField(max_length=50)
+	description = models.TextField(blank=True)
+	cover = models.ImageField(upload_to='covers/', blank=True)
+	ISBN = models.CharField(max_length=14, blank=True)
+
+	def __unicode__(self):
+		return self.title + ' - ' + self.author
+
 
 class ShelfCache(models.Model):
 	user = models.ForeignKey(User)

@@ -27,6 +27,7 @@ router.register(r'users', views.UserMetaViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'boards', views.BoardViewSet)
 router.register(r'currentUser', views.CurrentUserViewSet, base_name='currentUser')
+router.register(r'books', views.BookViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

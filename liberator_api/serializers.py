@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 
 from rest_framework import serializers
 
-from liberator_api.models import UserMeta, ShelfCache
+from liberator_api.models import UserMeta, Book, ShelfCache
 
 # Serializers define the API representation.
 class UserSerializer(serializers.ModelSerializer):
@@ -23,6 +23,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Group
 		fields = ('url', 'name')
+
+class BookSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Book
+		fields = '__all__'
 
 class ShelfCacheSerializer(serializers.ModelSerializer):
 	class Meta:
