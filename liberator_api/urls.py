@@ -28,6 +28,8 @@ router.register(r'groups', views.GroupViewSet)
 router.register(r'boards', views.BoardViewSet)
 router.register(r'currentUser', views.CurrentUserViewSet, base_name='currentUser')
 router.register(r'books', views.BookViewSet)
+router.register(r'shelfs', views.ShelfViewSet)
+router.register(r'shelfitems', views.ShelfItemViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

@@ -12,8 +12,8 @@ from pprint import pprint
 import json
 from json import JSONEncoder
 
-from liberator_api.models import UserMeta, Book, ShelfCache
-from liberator_api.serializers import UserSerializer, UserMetaSerializer, GroupSerializer, BookSerializer, ShelfCacheSerializer
+from liberator_api.models import UserMeta, Book, Shelf, ShelfItem, ShelfCache
+from liberator_api import serializers
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     permission_classes = (permissions.AllowAny,)
     queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
 
     def create(self, request):
         return super(UserViewSet, self).create(request)
@@ -34,7 +34,7 @@ class UserMetaViewSet(viewsets.ModelViewSet):
     """
     permission_classes = (permissions.AllowAny,)
     queryset = UserMeta.objects.all()
-    serializer_class = UserMetaSerializer
+    serializer_class = serializers.UserMetaSerializer
 
     #def retrieve(self, request, pk=None):
     #    usermeta = UserMeta.objects.get(user__id=pk)
@@ -48,7 +48,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
     API endpoint that allows actions on currently logged in user
     """ 
 
-    serializer_class = UserMetaSerializer
+    serializer_class = serializers.UserMetaSerializer
     permission_classes = (permissions.AllowAny,)
 
     def list(self, request):
@@ -65,15 +65,30 @@ class GroupViewSet(viewsets.ModelViewSet):
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    serializer_class = serializers.GroupSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows groups to be viewed or edited.
+    API endpoint that allows books to be viewed or edited.
     """
     queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    serializer_class = serializers.BookSerializer
+
+
+class ShelfViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows shelfs to be viewed or edited.
+    """
+    queryset = Shelf.objects.all()
+    serializer_class = serializers.ShelfSerializer
+
+class ShelfItemViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows shelf items to be viewed or edited.
+    """
+    queryset = ShelfItem.objects.all()
+    serializer_class = serializers.ShelfItemSerializer
 
 
 class BoardViewSet(viewsets.ModelViewSet):
@@ -82,7 +97,7 @@ class BoardViewSet(viewsets.ModelViewSet):
     """
     permission_classes = (permissions.AllowAny,)
     queryset = ShelfCache.objects.all()
-    serializer_class = ShelfCacheSerializer  
+    serializer_class = serializers.ShelfCacheSerializer  
 
     def retreve(self, request, pk=None):
         instance = self.get_object()

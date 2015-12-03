@@ -12,6 +12,7 @@ class UserMeta(models.Model):
 	def __unicode__(self):
 		return self.displayName
 
+
 class Book(models.Model):
 	title = models.CharField(max_length=600)
 	author = models.CharField(max_length=50)
@@ -21,6 +22,29 @@ class Book(models.Model):
 
 	def __unicode__(self):
 		return self.title + ' - ' + self.author
+
+
+class Shelf(models.Model):
+	title = models.CharField(max_length=200)
+	creator = models.ForeignKey(UserMeta)
+	description = models.TextField(blank=True)
+	items = models.ManyToManyField(Book, through='ShelfItem')
+
+	def __unicode__(self):
+		return self.title + ' - ' + self.creator.displayName
+
+
+class ShelfItem(models.Model):
+	shelf = models.ForeignKey(Shelf)
+	item = models.ForeignKey(Book)
+	quote = models.CharField(max_length=140, blank=True)
+	order = models.IntegerField(blank=True, default=1)
+
+	def __unicode__(self):
+		return self.shelf.title + ' - ' + self.item.title
+
+	class Meta: 
+		ordering = ['order']
 
 
 class ShelfCache(models.Model):
