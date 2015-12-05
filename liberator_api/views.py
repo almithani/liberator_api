@@ -82,6 +82,8 @@ class ShelfViewSet(viewsets.ModelViewSet):
     """
     queryset = Shelf.objects.all()
     serializer_class = serializers.ShelfSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
 
 class ShelfItemViewSet(viewsets.ModelViewSet):
     """
