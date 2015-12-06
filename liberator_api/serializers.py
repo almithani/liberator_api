@@ -41,7 +41,7 @@ class ShelfSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Shelf
-		fields = ('title', 'creator', 'description', 'items' )
+		fields = ('id', 'title', 'creator', 'description', 'items' )
 		depth = 1
 
 
