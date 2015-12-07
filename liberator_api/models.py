@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.utils import timezone
+
 #
 class UserMeta(models.Model):
 	user = models.ForeignKey(User)
@@ -29,9 +31,13 @@ class Shelf(models.Model):
 	creator = models.ForeignKey(UserMeta)
 	description = models.TextField(blank=True)
 	items = models.ManyToManyField(Book, through='ShelfItem')
+	date_added = models.DateTimeField(default=timezone.now)
 
 	def __unicode__(self):
 		return self.title + ' - ' + self.creator.displayName
+
+	class Meta: 
+		ordering = ['-date_added']
 
 
 class ShelfItem(models.Model):
