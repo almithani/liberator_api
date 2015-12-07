@@ -21,6 +21,7 @@ class Book(models.Model):
 	description = models.TextField(blank=True)
 	cover = models.ImageField(upload_to='covers/', blank=True)
 	ISBN = models.CharField(max_length=14, blank=True)
+	amazon_link = models.CharField(max_length=2083, blank=True)
 
 	def __unicode__(self):
 		return self.title + ' - ' + self.author
