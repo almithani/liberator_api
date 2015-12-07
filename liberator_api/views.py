@@ -27,6 +27,33 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         return super(UserViewSet, self).create(request)
 
+class EmailViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows emails to be collected
+    """
+    permission_classes = (permissions.AllowAny,)
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = serializers.UserSerializer
+
+    #only allow creation - all these functions are defined to prevent the other actions
+    def list(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+
+
+
+
 
 class UserMetaViewSet(viewsets.ModelViewSet):
     """

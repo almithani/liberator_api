@@ -24,6 +24,7 @@ from liberator_api import views
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', views.UserMetaViewSet)
+router.register(r'emails', views.EmailViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'boards', views.BoardViewSet)
 router.register(r'currentUser', views.CurrentUserViewSet, base_name='currentUser')
