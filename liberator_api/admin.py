@@ -12,7 +12,7 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(Shelf)
 class ShelfAdmin(admin.ModelAdmin):
-	list_display = ('pk', 'creator', 'title')
+	list_display = ('pk', 'creator', 'title', 'date_added')
 	pass
 
 @admin.register(ShelfItem)
