@@ -116,8 +116,11 @@ REST_FRAMEWORK = {
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
         'app.recoroll.com',
-        'stageapp.recoroll.com'
+        'stageapp.recoroll.com',
+        'liberator.me',
+        'app.liberator.me',
+        'stageapp.liberator.me',
 )
 
-SESSION_COOKIE_DOMAIN="recoroll.com"
+SESSION_COOKIE_DOMAIN="liberator.me"
 SESSION_COOKIE_HTTPONLY=False
