@@ -34,6 +34,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 class ShelfItemSerializer(serializers.ModelSerializer):
 
+	id = serializers.IntegerField(source='item.id')
 	title = serializers.CharField(source='item.title', max_length=600 )
 	author = serializers.CharField(source='item.author', max_length=50 )
 	description = serializers.CharField(source='item.description', allow_blank=True, required=False, style={'base_template': 'textarea.html'})
@@ -43,7 +44,7 @@ class ShelfItemSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = ShelfItem
-		fields = ('title', 'author', 'description', 'cover', 'ISBN', 'amazon_link', 'quote', 'order')
+		fields = ('id', 'title', 'author', 'description', 'cover', 'ISBN', 'amazon_link', 'quote', 'order')
 
 
 class ShelfSerializer(serializers.ModelSerializer):
