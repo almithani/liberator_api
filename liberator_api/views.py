@@ -2,10 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.decorators import detail_route
 
 from pprint import pprint
 
@@ -14,6 +16,13 @@ from json import JSONEncoder
 
 from liberator_api.models import UserMeta, Book, Shelf, ShelfItem, ShelfCache
 from liberator_api import serializers
+
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -77,6 +86,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.UserMetaSerializer
     permission_classes = (permissions.AllowAny,)
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def list(self, request):
         if request.user.is_authenticated():
@@ -85,6 +95,59 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data) 
         else:
             return HttpResponse(json.dumps({}), content_type="application/json")
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+
+    @detail_route(methods=['post'])
+    @csrf_exempt
+    def addItemTolist(self, request, pk=None):
+        if request.user.is_authenticated():
+            usermeta = UserMeta.objects.get(user=request.user)
+            book_id = int(request.POST['book_id'])
+            item = Book.objects.get(pk=book_id)
+
+            #check if the user already has a reading list
+            from django.core.exceptions import ObjectDoesNotExist
+            try:
+                reading_list_shelf = Shelf.objects.get(creator=usermeta, title__contains="My Reading List")
+            except ObjectDoesNotExist:
+                reading_list_shelf = Shelf.objects.create(creator=usermeta, title="My Reading List", description="Books that I want to read.")
+
+            #at this point, we know reading_list_shelf exists
+
+            #find the highest order in the reading list
+            highest_order = ShelfItem.objects.filter(shelf=reading_list_shelf).order_by('-order').first()
+            if highest_order==None:
+                highest_order = 1
+            else:
+                highest_order = highest_order['order']+1
+
+            ShelfItem.objects.create(shelf=reading_list_shelf, order=highest_order, item=item)
+
+            returnContext = {}
+            returnContext['status'] = 'success'
+
+            return HttpResponse(json.dumps(returnContext), content_type="application/json")
+        else:
+            returnContext = {}
+            returnContext['status'] = 'error'
+            returnContext['errors'] = ["User is not signed in"]
+
+            return HttpResponse(json.dumps(returnContext), content_type="application/json")
+
 
 
 class GroupViewSet(viewsets.ModelViewSet):
