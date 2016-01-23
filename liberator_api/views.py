@@ -133,7 +133,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             if highest_order==None:
                 highest_order = 1
             else:
-                highest_order = highest_order['order']+1
+                highest_order = highest_order.order+1
 
             ShelfItem.objects.create(shelf=reading_list_shelf, order=highest_order, item=item)
 
