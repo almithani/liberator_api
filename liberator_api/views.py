@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import list_route, detail_route
 
 from pprint import pprint
 
@@ -119,14 +119,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             book_id = int(request.POST['book_id'])
             item = Book.objects.get(pk=book_id)
 
-            #check if the user already has a reading list
-            from django.core.exceptions import ObjectDoesNotExist
-            try:
-                reading_list_shelf = Shelf.objects.get(creator=usermeta, title__contains="My Reading List")
-            except ObjectDoesNotExist:
-                reading_list_shelf = Shelf.objects.create(creator=usermeta, title="My Reading List", description="Books that I want to read.")
-
-            #at this point, we know reading_list_shelf exists
+            reading_list_shelf = usermeta.getReadingList().first()
 
             #find the highest order in the reading list
             highest_order = ShelfItem.objects.filter(shelf=reading_list_shelf).order_by('-order').first()
@@ -147,6 +140,27 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             returnContext['errors'] = ["User is not signed in"]
 
             return HttpResponse(json.dumps(returnContext), content_type="application/json")
+
+    @list_route(methods=['get'])
+    @csrf_exempt
+    def readingList(self, request):
+        if request.user.is_authenticated():
+            usermeta = UserMeta.objects.get(user=request.user)  
+            self.queryset = usermeta.getReadingList()
+            self.serializer_class = serializers.ShelfSerializer
+            #serializer = serializers.ShelfSerializer(queryset)
+
+            #return Response(serializer.data)
+            return viewsets.ModelViewSet.list(self, request)
+
+        else:
+            returnContext = {}
+            returnContext['status'] = 'error'
+            returnContext['errors'] = ["User is not signed in"]
+
+            return HttpResponse(json.dumps(returnContext), content_type="application/json")           
+            
+
 
 
 
@@ -191,7 +205,7 @@ class BoardViewSet(viewsets.ModelViewSet):
     queryset = ShelfCache.objects.all()
     serializer_class = serializers.ShelfCacheSerializer  
 
-    def retreve(self, request, pk=None):
+    def retrieve(self, request, pk=None):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
 

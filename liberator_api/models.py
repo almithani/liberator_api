@@ -5,11 +5,23 @@ from django.utils import timezone
 
 #
 class UserMeta(models.Model):
+	READING_LIST_TITLE = "My Reading List"
+
 	user = models.ForeignKey(User)
 	avatar = models.ImageField(upload_to='user_avatars/', blank=True)
 	displayName = models.CharField(max_length=50, blank=True)
 	tagline = models.CharField(max_length=100, blank=True)
 	description = models.TextField(blank=True)
+
+	def getReadingList(self):
+		from django.core.exceptions import ObjectDoesNotExist
+		try:
+			reading_list_shelf = Shelf.objects.filter(creator=self, title__contains=self.READING_LIST_TITLE)
+		except ObjectDoesNotExist: 
+			Shelf.objects.create(creator=self, title=self.READING_LIST_TITLE, description="Books that I want to read.")
+			reading_list_shelf = Shelf.objects.filter(creator=self, title__contains=self.READING_LIST_TITLE)
+
+		return reading_list_shelf
 
 	def __unicode__(self):
 		return self.displayName
