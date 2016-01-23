@@ -28,11 +28,22 @@ class Book(models.Model):
 
 
 class Shelf(models.Model):
+	STATUS_PRIVATE = 0
+	STATUS_PUBLIC = 1
+	STATUS_FRONTPAGE = 2
+
+	STATUS_ENUM = (
+		(STATUS_PRIVATE, 'PRIVATE'),
+		(STATUS_PUBLIC, 'PUBLIC'),
+		(STATUS_FRONTPAGE, 'FRONTPAGE')
+	)
+
 	title = models.CharField(max_length=200)
 	creator = models.ForeignKey(UserMeta)
 	description = models.TextField(blank=True)
 	items = models.ManyToManyField(Book, through='ShelfItem')
 	date_added = models.DateTimeField(default=timezone.now)
+	status = models.IntegerField(choices=STATUS_ENUM, default=STATUS_PUBLIC)
 
 	def __unicode__(self):
 		return self.title + ' - ' + self.creator.displayName
