@@ -184,10 +184,17 @@ class ShelfViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows shelfs to be viewed or edited.
     """
-    queryset = Shelf.objects.filter(status__gte=Shelf.STATUS_FRONTPAGE)
+    queryset = Shelf.objects.all()
     serializer_class = serializers.ShelfSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+    def list(self, request):
+        self.queryset = Shelf.objects.filter(status__gte=Shelf.STATUS_FRONTPAGE)
+        return super(ShelfViewSet, self).list(request)
+
+    def retrieve(self, request, pk=None):
+        self.queryset = Shelf.objects.filter(pk__exact=pk, status__gte=Shelf.STATUS_PUBLIC)
+        return super(ShelfViewSet, self).retrieve(request)
 
 class ShelfItemViewSet(viewsets.ModelViewSet):
     """
