@@ -1,4 +1,4 @@
 *.pyc
-firstsite/db_settings.py
+firstsite/secret_settings.py
 static/
 media/

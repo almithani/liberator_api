@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'firstsite.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 #keeping db info in a seprate, non-version controlled file
-import firstsite.db_settings
-DATABASES = firstsite.db_settings.DATABASES
+import firstsite.secret_settings
+
+DATABASES = firstsite.secret_settings.DATABASES
+
+AWS_ACCESS = firstsite.secret_settings.AWS_ACCESS
+AWS_SECRET = firstsite.secret_settings.AWS_SECRET
 
 
 # Internationalization
