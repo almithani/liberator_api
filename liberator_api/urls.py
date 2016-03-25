@@ -31,6 +31,7 @@ router.register(r'currentUser', views.CurrentUserViewSet, base_name='currentUser
 router.register(r'books', views.BookViewSet)
 router.register(r'shelfs', views.ShelfViewSet)
 router.register(r'shelfitems', views.ShelfItemViewSet)
+router.register(r'search', views.SearchViewSet, base_name='search')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

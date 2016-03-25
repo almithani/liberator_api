@@ -79,6 +79,45 @@ class UserMetaViewSet(viewsets.ModelViewSet):
 
 
 
+class SearchViewSet(viewsets.ViewSet):
+    """
+    API endpoint that handles searching for new books 
+    """ 
+
+    #serializer_class = 
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
+    def create(self, request):
+
+        import bottlenose
+        from lxml import objectify
+        import firstsite.settings as settings
+
+        # get results from amazon
+        searchString = request.POST['book']
+        amazon = bottlenose.Amazon(settings.AWS_ACCESS, settings.AWS_SECRET, settings.AWS_ASSOC)
+        response = amazon.ItemSearch(Keywords=searchString, SearchIndex="Books", ResponseGroup="ItemAttributes, Images")
+        response_object = objectify.fromstring(response)
+
+        #grab the values we actually need and stuff them into a dict
+        response_dict = {}
+        response_dict['results'] = []
+
+        for item in response_object.Items.Item:
+            item_dict = {}
+            item_dict['title'] = str(item.ItemAttributes.Title)
+            item_dict['author'] = str(item.ItemAttributes.Author)
+            item_dict['image'] = str(item.LargeImage.URL)
+            item_dict['url'] = str(item.DetailPageURL)
+
+            response_dict['results'].append(item_dict)
+
+
+        return HttpResponse(json.dumps(response_dict), content_type="application/json")
+
+
+
 class CurrentUserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows actions on currently logged in user

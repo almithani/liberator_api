@@ -86,6 +86,7 @@ DATABASES = firstsite.secret_settings.DATABASES
 
 AWS_ACCESS = firstsite.secret_settings.AWS_ACCESS
 AWS_SECRET = firstsite.secret_settings.AWS_SECRET
+AWS_ASSOC = firstsite.secret_settings.AWS_ASSOC
 
 
 # Internationalization
