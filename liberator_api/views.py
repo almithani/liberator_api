@@ -105,13 +105,16 @@ class SearchViewSet(viewsets.ViewSet):
         response_dict['results'] = []
 
         for item in response_object.Items.Item:
-            item_dict = {}
-            item_dict['title'] = str(item.ItemAttributes.Title)
-            item_dict['author'] = str(item.ItemAttributes.Author)
-            item_dict['image'] = str(item.LargeImage.URL)
-            item_dict['url'] = str(item.DetailPageURL)
+            try:
+                item_dict = {}
+                item_dict['title'] = str(item.ItemAttributes.Title)
+                item_dict['author'] = str(item.ItemAttributes.Author)
+                item_dict['image'] = str(item.LargeImage.URL)
+                item_dict['url'] = str(item.DetailPageURL)
+                response_dict['results'].append(item_dict)
 
-            response_dict['results'].append(item_dict)
+            except AttributeError:
+                pass
 
 
         return HttpResponse(json.dumps(response_dict), content_type="application/json")
