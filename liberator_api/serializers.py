@@ -8,7 +8,7 @@ from liberator_api.models import UserMeta, Book, Shelf, ShelfItem, ShelfCache
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('id', 'username', 'email')
+		fields = ('id', 'username', 'email', 'password')
 
 class UserMetaSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
