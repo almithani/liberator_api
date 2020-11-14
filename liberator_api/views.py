@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -35,6 +36,29 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         return super(UserViewSet, self).create(request)
+
+    @list_route(methods=['POST'])
+    def login(self, request):
+        from django.contrib.auth import authenticate
+
+        #return HttpResponse(repr(request), content_type="application/text")
+
+        response_dict = {}
+        response_dict['status'] = 'error'
+
+        user = authenticate(username=request.data['username'], password=request.data['password'])
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                response_dict['status'] = 'ok'
+                response_user={}
+                response_user['username']=user.username
+                response_dict['user']=response_user
+                return HttpResponse(json.dumps(response_dict), content_type="application/json")
+                #return HttpResponse(json.dumps(user), content_type="application/json")
+
+        return HttpResponse(json.dumps(response_dict), content_type="application/json")
 
 class EmailViewSet(viewsets.ModelViewSet):
     """
