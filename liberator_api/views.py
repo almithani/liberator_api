@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.db import IntegrityError
 
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -35,13 +36,27 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
 
     def create(self, request):
-        return super(UserViewSet, self).create(request)
+        response_dict = {}
+        response_dict['status'] = 'error'
+
+        try:
+            user = User.objects.create_user(username=request.data['username'], email=request.data['email'], password=request.data['password'])
+        except IntegrityError as e:
+            response_dict['status'] = 'error'
+            response_dict['error'] = 'Username or email already exists'
+            #409 conflict
+            return HttpResponse(json.dumps(response_dict), content_type="application/json", status=409)
+
+        response_dict['status'] = 'ok'
+        response_user={}
+        response_user['id']=user.id
+        response_user['username']=user.username
+        response_dict['user']=response_user
+        return HttpResponse(json.dumps(response_dict), content_type="application/json", status=200)
 
     @list_route(methods=['POST'])
     def login(self, request):
         from django.contrib.auth import authenticate
-
-        #return HttpResponse(repr(request), content_type="application/text")
 
         response_dict = {}
         response_dict['status'] = 'error'
@@ -55,10 +70,10 @@ class UserViewSet(viewsets.ModelViewSet):
                 response_user={}
                 response_user['username']=user.username
                 response_dict['user']=response_user
-                return HttpResponse(json.dumps(response_dict), content_type="application/json")
-                #return HttpResponse(json.dumps(user), content_type="application/json")
+                return HttpResponse(json.dumps(response_dict), content_type="application/json", status=200)
 
-        return HttpResponse(json.dumps(response_dict), content_type="application/json")
+        #401 unauthorized (bad user or pass)
+        return HttpResponse(json.dumps(response_dict), content_type="application/json", status=401)
 
 class EmailViewSet(viewsets.ModelViewSet):
     """
