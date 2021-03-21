@@ -1,3 +1,5 @@
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
@@ -27,6 +29,11 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
         return  # To not perform the csrf check previously happening
 
 
+def validate_generic(value):
+    if len(value.strip()) < 3:
+        raise ValidationError('Field is not valid')
+
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -38,6 +45,14 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         response_dict = {}
         response_dict['status'] = 'error'
+
+        try:
+            validate_generic(request.data['username'])
+            validate_email(request.data['email'])
+            validate_generic(request.data['password'])
+        except ValidationError as e:
+            response_dict['error'] = 'Invalid username, email, or password.'
+            return HttpResponse(json.dumps(response_dict), content_type="application/json", status=400)
 
         try:
             user = User.objects.create_user(username=request.data['username'], email=request.data['email'], password=request.data['password'])
