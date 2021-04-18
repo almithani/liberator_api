@@ -125,7 +125,8 @@ CORS_ORIGIN_WHITELIST = (
         'liberator.me',
         'app.liberator.me',
         'stageapp.liberator.me',
-        'books.liberator.me'
+        'books.liberator.me',
+        'stagebooks.liberator.me'
 )
 
 SESSION_COOKIE_DOMAIN="liberator.me"
